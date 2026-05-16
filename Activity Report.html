@@ -1,0 +1,1038 @@
+<!DOCTYPE html><html lang="en"><head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sri Sathya Sai Kuteer — Activity Postcard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+  :root {
+    --saffron: #e88e1a;
+    --gold: #d2a444;
+    --deep-gold: #8a5a16;
+    --maroon: #5c1a1b;
+    --ink: #1b1209;
+    --cream: #f6ecd6;
+    --paper: #f1e6cf;
+    --paper-dim: #e8dbbf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #1a1410;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 56px;
+    gap: 28px;
+    background:
+      radial-gradient(ellipse at 50% 0%, #2c1f15 0%, #120c08 75%);
+  }
+  .scene-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(246,236,214,0.5);
+    margin-bottom: 4px;
+  }
+
+  /* ───────── POSTCARD BASE ─────────
+     A real 4×6" postcard, in inches so print is true. */
+  .postcard {
+    width: 6in;
+    height: 4in;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04),
+      0 24px 48px -16px rgba(0,0,0,0.65),
+      0 6px 14px rgba(0,0,0,0.4);
+    color: var(--ink);
+    transform-origin: top center;
+  }
+  /* Paper texture */
+  .postcard::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,0.05) 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(0,0,0,0.06) 0%, transparent 40%);
+    mix-blend-mode: multiply;
+  }
+  .corner {
+    position: absolute;
+    width: 0.18in; height: 0.18in;
+    border: 0.012in solid var(--deep-gold);
+    opacity: 0.55;
+  }
+  .corner.tl { top: 0.12in; left: 0.12in; border-right: 0; border-bottom: 0; }
+  .corner.tr { top: 0.12in; right: 0.12in; border-left: 0; border-bottom: 0; }
+  .corner.bl { bottom: 0.12in; left: 0.12in; border-right: 0; border-top: 0; }
+  .corner.br { bottom: 0.12in; right: 0.12in; border-left: 0; border-top: 0; }
+
+  /* ─────── FRONT ─────── */
+  .front {
+    background:
+      linear-gradient(180deg, rgba(20,12,6,0) 35%, rgba(20,12,6,0.5) 70%, rgba(20,12,6,0.92) 100%),
+      url("assets/hanuman.png");
+    background-size: cover, cover;
+    background-position: center 8%, center 18%;
+    background-repeat: no-repeat;
+    color: var(--cream);
+  }
+  /* Saffron film overlay */
+  .front .film {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(232,142,26,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(92,26,27,0.35) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .front .stamp {
+    position: absolute;
+    top: 0.22in;
+    right: 0.22in;
+    width: 0.78in;
+    height: 0.95in;
+    border: 0.014in solid var(--gold);
+    background: linear-gradient(180deg, rgba(255,240,200,0.95), rgba(232,180,80,0.9));
+    color: var(--maroon);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.06in;
+    box-shadow: 0 0.02in 0.06in rgba(0,0,0,0.35);
+  }
+  .front .stamp::before {
+    content: "";
+    position: absolute;
+    inset: -0.04in;
+    border: 0.012in dashed rgba(92,26,27,0.5);
+    pointer-events: none;
+  }
+  .front .stamp .om {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28pt;
+    line-height: 0.9;
+    font-weight: 500;
+    color: var(--maroon);
+    margin-bottom: 0.02in;
+  }
+  .front .stamp .denom {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5pt;
+    letter-spacing: 0.16em;
+    color: var(--maroon);
+    text-transform: uppercase;
+  }
+  .front .postmark {
+    position: absolute;
+    top: 0.5in;
+    right: 1.1in;
+    width: 1.1in;
+    height: 1.1in;
+    border: 0.014in solid rgba(246,236,214,0.45);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: rotate(-12deg);
+    color: rgba(246,236,214,0.7);
+    pointer-events: none;
+  }
+  .front .postmark::before {
+    content: "";
+    position: absolute; inset: 0.06in;
+    border: 0.008in solid rgba(246,236,214,0.35);
+    border-radius: 50%;
+  }
+  .front .postmark .pm-top,
+  .front .postmark .pm-bot {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.2pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .front .postmark .pm-center {
+    font-family: 'Marcellus', serif;
+    font-size: 8pt;
+    letter-spacing: 0.16em;
+    margin: 0.04in 0;
+    color: var(--cream);
+  }
+  .front .pm-wave {
+    position: absolute;
+    top: 0.96in;
+    right: 0.18in;
+    display: flex;
+    flex-direction: column;
+    gap: 0.04in;
+    transform: rotate(-12deg);
+    opacity: 0.55;
+  }
+  .front .pm-wave span {
+    display: block;
+    width: 0.7in; height: 0.018in;
+    background: rgba(246,236,214,0.55);
+    border-radius: 1px;
+  }
+
+  .front .titleblock {
+    position: absolute;
+    left: 0.34in;
+    bottom: 0.3in;
+    right: 0.34in;
+    color: var(--cream);
+    z-index: 2;
+  }
+  .front .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.2pt;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.08in;
+    display: flex;
+    align-items: center;
+    gap: 0.08in;
+  }
+  .front .kicker::after {
+    content: "";
+    flex: 1; height: 0.01in;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    max-width: 1.6in;
+  }
+  .front h1 {
+    font-family: 'Marcellus', serif;
+    font-weight: 400;
+    font-size: 22pt;
+    line-height: 0.98;
+    letter-spacing: -0.005em;
+  }
+  .front h1 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold);
+  }
+  .front .sub {
+    margin-top: 0.08in;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 9.5pt;
+    color: rgba(246,236,214,0.85);
+    max-width: 3.4in;
+    line-height: 1.35;
+  }
+  .front .footstrip {
+    position: absolute;
+    bottom: 0.12in;
+    left: 0.34in;
+    right: 0.34in;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.5pt;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(246,236,214,0.55);
+    z-index: 2;
+  }
+
+  /* ─────── BACK ─────── */
+  .back {
+    background:
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-dim) 100%);
+    color: var(--ink);
+    padding: 0.16in 0.24in 0.14in;
+    display: flex;
+    flex-direction: column;
+  }
+  .back .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.06in;
+    border-bottom: 0.008in solid rgba(138,90,22,0.4);
+    margin-bottom: 0.07in;
+  }
+  .back .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.1in;
+  }
+  .back .mandala {
+    width: 0.5in; height: 0.5in;
+    background-image: url("assets/logo.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0.01in 0.02in rgba(0,0,0,0.18));
+  }
+  .back .brand-text .name {
+    font-family: 'Marcellus', serif;
+    font-size: 11pt;
+    line-height: 1;
+    color: var(--maroon);
+    letter-spacing: 0.01em;
+  }
+  .back .brand-text .name a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .back .brand-text .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 7pt;
+    color: var(--deep-gold);
+    margin-top: 0.02in;
+  }
+  .back .brand-text .tagline a {
+    color: var(--saffron);
+    text-decoration: none;
+    border-bottom: 0.006in solid rgba(232,142,26,0.5);
+  }
+  .back .brand-text .place {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5pt;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--deep-gold);
+    margin-top: 0.03in;
+  }
+  .back .reportmeta {
+    text-align: right;
+  }
+  .back .reportmeta .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    font-weight: 700;
+  }
+  .back .reportmeta .title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10pt;
+    color: var(--ink);
+    margin-top: 0.01in;
+  }
+  .back .reportmeta .period {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11pt;
+    letter-spacing: 0;
+    color: var(--maroon);
+    margin-top: 0.03in;
+    font-weight: 500;
+  }
+
+  /* Section label */
+  .seclabel {
+    display: flex;
+    align-items: center;
+    gap: 0.08in;
+    margin-bottom: 0.04in;
+  }
+  .seclabel .dot {
+    width: 0.05in; height: 0.05in;
+    background: var(--saffron);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.014in rgba(232,142,26,0.25);
+  }
+  .seclabel .txt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.4pt;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--maroon);
+  }
+  .seclabel .em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 7pt;
+    color: var(--deep-gold);
+    margin-left: 0.04in;
+  }
+  .seclabel .rule {
+    flex: 1;
+    height: 0.006in;
+    background: linear-gradient(90deg, rgba(138,90,22,0.4), transparent);
+  }
+
+  /* Stat grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.06in;
+    margin-bottom: 0.06in;
+  }
+  .cell {
+    position: relative;
+    padding: 0.06in 0.08in 0.07in;
+    background: rgba(255,255,255,0.5);
+    border: 0.006in solid rgba(138,90,22,0.28);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  .cell .nm {
+    font-family: 'Inter', sans-serif;
+    font-size: 5.6pt;
+    line-height: 1.15;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    min-height: 0.2in;
+    text-align: center;
+  }
+  .cell .nm .when {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4.5pt;
+    letter-spacing: 0.16em;
+    color: var(--deep-gold);
+    text-transform: uppercase;
+    margin-top: 0.02in;
+    font-weight: 400;
+  }
+  .cell .num {
+    font-family: 'Marcellus', serif;
+    font-size: 16pt;
+    color: var(--maroon);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-top: auto;
+    padding-top: 0.04in;
+    text-align: center;
+  }
+  .cell .num small {
+    font-size: 7pt;
+    color: var(--saffron);
+    margin-left: 0.02in;
+  }
+  .cell .num small.qual {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 9pt;
+    color: var(--saffron);
+    font-weight: 500;
+    margin-left: 0.04in;
+    letter-spacing: 0;
+  }
+  .cell .unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4.6pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--deep-gold);
+    margin-top: 0.03in;
+    text-align: center;
+  }
+  .cell.feature {
+    background:
+      linear-gradient(135deg, rgba(232,142,26,0.18), rgba(210,164,68,0.1));
+    border-color: rgba(138,90,22,0.45);
+  }
+
+  /* Monthly grid - 4x2 layout with feature span */
+  .grid.monthly {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .cell.span-2 { grid-column: span 2; }
+  .cell .num.text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13pt;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  /* Dual-stat feature card */
+  .cell.span-2 { display: flex; flex-direction: column; }
+  .dualstat {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.14in;
+    margin-top: auto;
+    padding-top: 0.05in;
+  }
+  .dualstat > div { display: flex; flex-direction: column; flex: 1; align-items: center; }
+  .dualstat .divider {
+    flex: 0 0 0.006in !important;
+    background: rgba(138,90,22,0.32);
+    align-self: stretch;
+    margin: 0 0.02in;
+  }
+  .dualstat .num { margin-top: 0; padding-top: 0; }
+  .dualstat .with-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 0.06in;
+  }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4.4pt;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    background: var(--gold);
+    padding: 0.018in 0.05in;
+    border-radius: 0.02in;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* Daily sub-activities strip */
+  .dailystrip {
+    display: flex;
+    align-items: stretch;
+    gap: 0.1in;
+    padding: 0.07in 0.1in;
+    margin-bottom: 0.07in;
+    background: rgba(232,142,26,0.09);
+    border: 0.006in dashed rgba(138,90,22,0.4);
+  }
+  .dailystrip .stripLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4.8pt;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    font-weight: 600;
+    border-right: 0.006in solid rgba(138,90,22,0.35);
+    padding-right: 0.1in;
+    line-height: 1.3;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+  .strip-rows {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05in;
+  }
+  .strip-row {
+    display: flex;
+    align-items: center;
+    gap: 0.1in;
+  }
+  .strip-row .row-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 7pt;
+    color: var(--saffron);
+    width: 0.55in;
+    flex-shrink: 0;
+    font-weight: 500;
+    text-align: right;
+    border-right: 0.006in solid rgba(232,142,26,0.4);
+    padding-right: 0.07in;
+    line-height: 1;
+  }
+  .dailystrip .items {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.04in 0.16in;
+  }
+  .dailystrip .item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.015in;
+    min-width: 0.85in;
+  }
+  .dailystrip .item .name {
+    font-family: 'Inter', sans-serif;
+    font-size: 5.6pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.05in;
+  }
+  .dailystrip .item .name::before {
+    content: "";
+    width: 0.04in; height: 0.04in;
+    border-radius: 50%;
+    background: var(--saffron);
+    box-shadow: 0 0 0 0.014in rgba(232,142,26,0.2);
+  }
+  .dailystrip .item .time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4.4pt;
+    letter-spacing: 0.18em;
+    color: var(--deep-gold);
+    text-transform: uppercase;
+    padding-left: 0.09in;
+  }
+
+  /* Footer */
+  .back .footer {
+    margin-top: auto;
+    padding-top: 0.05in;
+    border-top: 0.008in solid rgba(138,90,22,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--deep-gold);
+  }
+  .back .footer .quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 8pt;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--maroon);
+    text-align: center;
+    flex: 1;
+  }
+  .back .footer .sitelink {
+    color: var(--maroon);
+    text-decoration: underline;
+    text-underline-offset: 0.02in;
+    text-decoration-thickness: 0.006in;
+    text-decoration-color: var(--saffron);
+    letter-spacing: 0.18em;
+    font-weight: 600;
+  }
+  .back .footer .sitelink:hover {
+    color: var(--saffron);
+  }
+
+  @media (min-width: 720px) {
+    .postcard { transform: scale(1.4); margin: 0.8in 0; }
+    body { gap: 100px; padding-top: 80px; }
+  }
+
+  /* ─────── FRONT v2 (postcard, mimics website hero) ─────── */
+  .front-v2 {
+    background: #ffffff;
+    display: grid;
+    grid-template-columns: 3.1in 2.9in;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-photo {
+    position: relative;
+    background-image: url("assets/hanuman-statue.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  .hero-photo .photo-tint {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(232,142,26,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-content {
+    padding: 0.32in 0.32in 0.26in;
+    display: flex;
+    flex-direction: column;
+    background:
+      linear-gradient(180deg, #ffffff 0%, #fdf7e8 100%);
+    border-left: 0.02in solid var(--gold);
+    position: relative;
+  }
+  .hero-content::before {
+    content: "";
+    position: absolute;
+    left: -0.06in;
+    top: 0.5in; bottom: 0.5in;
+    width: 0.02in;
+    background: var(--saffron);
+    opacity: 0.4;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 0.12in;
+    padding-bottom: 0.16in;
+    border-bottom: 0.006in solid rgba(138,90,22,0.3);
+  }
+  .hero-logo {
+    width: 0.55in;
+    height: 0.55in;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0.01in 0.02in rgba(0,0,0,0.18));
+  }
+  .hero-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.02in;
+    min-width: 0;
+  }
+  .hero-brand .brandline {
+    font-family: 'Marcellus', serif;
+    font-size: 12.5pt;
+    line-height: 1;
+    color: #1a2d5e;
+    letter-spacing: 0.005em;
+  }
+  .hero-brand .urlline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.6pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--saffron);
+    text-decoration: none;
+    border-bottom: 0.006in solid rgba(232,142,26,0.4);
+    width: fit-content;
+  }
+  .hero-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.16in 0 0.12in;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5.5pt;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--deep-gold);
+    margin-bottom: 0.1in;
+  }
+  .hero-h1 {
+    font-family: 'Marcellus', serif;
+    font-size: 30pt;
+    line-height: 0.95;
+    color: #1a2d5e;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.14in;
+  }
+  .hero-lede {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11pt;
+    line-height: 1.35;
+    color: #2a6f4a;
+    font-weight: 500;
+  }
+  .hero-lede em {
+    font-style: italic;
+    color: #1a2d5e;
+    font-weight: 600;
+  }
+  .hero-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 0.1in;
+    border-top: 0.006in solid rgba(138,90,22,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--deep-gold);
+  }
+  .hero-foot .hero-foot-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 7pt;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--maroon);
+  }
+
+  /* PRINT */
+  @page {
+    size: 6in 4in;
+    margin: 0;
+  }
+  @media print {
+    body { background: white; padding: 0; gap: 0; }
+    .scene-label { display: none; }
+    .postcard {
+      transform: none !important;
+      margin: 0 !important;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .postcard:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body class="palette-saffron">
+
+  <!-- ════════ FRONT ════════ -->
+  <article class="postcard front-v2" data-screen-label="01 Front">
+
+    <!-- Left photo panel -->
+    <div class="hero-photo">
+      <div class="photo-tint"></div>
+    </div>
+
+    <!-- Right content panel -->
+    <div class="hero-content">
+      <div class="hero-top">
+        <img class="hero-logo" src="assets/logo.png" alt="Sri Sathya Sai Kuteer"/>
+        <div class="hero-brand">
+          <div class="brandline">Sri Sathya Sai Kuteer</div>
+        </div>
+      </div>
+
+      <div class="hero-body">
+        <div class="hero-eyebrow"></div>
+        <h1 class="hero-h1">A Spiritual<br/>Center.</h1>
+        <p class="hero-lede">Established under the divine guidance of <em>Bhagawan Sri Sathya Sai Baba</em> to provide a platform for spiritual aspirants of all faiths.</p>
+      </div>
+
+      <div class="hero-foot">
+        <span>Puttaparthi · Andhra Pradesh · 515134</span>
+        <span class="hero-foot-quote"></span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ════════ BACK ════════ -->
+  <article class="postcard back" data-screen-label="Postcard">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="brand">
+        <div class="mandala"></div>
+        <div class="brand-text">
+          <div class="name">Sri Sathya Sai Kuteer</div>
+          <div class="place">Puttaparthi · A.P. 515134</div>
+        </div>
+      </div>
+      <div class="reportmeta">
+        <div class="label">Monthly Activity Report</div>
+        <div class="period">April 2026</div>
+      </div>
+    </div>
+
+    <div class="grid monthly">
+      <!-- Nitya Narayana Seva — dual stat, spans 2 columns -->
+      <div class="cell span-2">
+        <div class="nm">Nitya Narayana Seva</div>
+        <div class="dualstat">
+          <div>
+            <div class="num">45</div>
+            <div class="unit">Meals Served · Daily</div>
+          </div>
+          <div class="divider"></div>
+          <div>
+            <div class="num">8</div>
+            <div class="unit">Villages Reached</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Monthly Narayana Seva<span class="when">23RD OF EVERY MONTH</span></div>
+        <div class="num">1000</div>
+        <div class="unit">Meals Served</div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Medical Camp /<br>Medicine Distributed</div>
+        <div class="num">18</div>
+        <div class="unit">Patients Treated</div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Shankara Eye Camp<span class="when">23RD OF EVERY MONTH</span></div>
+        <div class="num" style="margin-top: 0.05in">35</div>
+        <div class="unit">Patients · Selected for Surgery</div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Tutions<span class="when">6 Days · Weekly</span></div>
+        <div class="num">45<br><small class="qual" style="display: block; margin: 0.02in 0 0; color: var(--maroon);">Students</small></div>
+        <div class="unit">Std 1 — 9</div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Vanara Seva<span class="when">Feeding the Monkeys</span></div>
+        <div class="num text">Twice<br>a Week</div>
+        <div class="unit">Bananas · Peanuts · Chana</div>
+      </div>
+
+      <div class="cell">
+        <div class="nm">Free RO Water<span class="when">24 × 7</span></div>
+        <div class="num">900<br><small class="qual" style="display: block; margin: 0.02in 0 0; color: var(--maroon);">Families</small></div>
+        <div class="unit">Drawn · Monthly</div>
+      </div>
+    </div>
+
+    <!-- Daily sub-activities strip -->
+    <div class="dailystrip">
+      <div class="stripLabel">Daily Spiritual<br>Activities</div>
+      <div class="strip-rows">
+        <div class="strip-row">
+          <div class="row-label">Morning</div>
+          <div class="items">
+            <div class="item">
+              <span class="name">&nbsp;Meditation &amp; Prayers</span>
+              <span class="time">05:00 — 06:00</span>
+            </div>
+            <div class="item">
+              <span class="name">Homam</span>
+              <span class="time">09:00 — 09:45</span>
+            </div>
+            <div class="item">
+              <span class="name">Bhajans</span>
+              <span class="time">09:45 — 10:30</span>
+            </div>
+            <div class="item">
+              <span class="name">Name Chanting</span>
+              <span class="time">10:30 — 11:00</span>
+            </div>
+          </div>
+        </div>
+        <div class="strip-row">
+          <div class="row-label">Evening</div>
+          <div class="items">
+            <div class="item">
+              <span class="name">&nbsp;Meditation</span>
+              <span class="time">17:00 — 18:00</span>
+            </div>
+            <div class="item">
+              <span class="name">Parayanam</span>
+              <span class="time">18:00 — 20:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div><a class="sitelink" href="https://www.srisathyasaikuteer.org" target="_blank" rel="noopener">srisathyasaikuteer.org</a></div>
+      <div class="quote">God is love, Service is love in action.</div>
+    </div>
+  </article>
+
+
+<!-- ════════ TWEAKS PANEL ════════ -->
+<div id="tweaks-root"></div>
+<script>
+  window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "palette": "saffron",
+    "showDailyStrip": true,
+    "showFooterQuote": true,
+    "reportPeriod": "April 2026"
+  }/*EDITMODE-END*/;
+</script>
+<style>
+  /* Tweak-driven helpers */
+  body.t-hide-strip .dailystrip { display: none !important; }
+  body.t-hide-quote .back .footer .quote { display: none !important; }
+
+  /* Palette variants */
+  body.palette-saffron { /* default */ }
+  body.palette-maroon {
+    --saffron: #b94a3a;
+    --gold: #b8862c;
+    --deep-gold: #6a3a14;
+    --maroon: #3a1010;
+  }
+  body.palette-emerald {
+    --saffron: #2f8a5a;
+    --gold: #c19a3a;
+    --deep-gold: #5a4a16;
+    --maroon: #1c3a26;
+  }
+  body.palette-ivory {
+    --saffron: #c98a2a;
+    --gold: #b88a3a;
+    --deep-gold: #6a4a14;
+    --maroon: #4a2a20;
+  }
+</style>
+<script type="text/babel" data-presets="react">
+  (function(){
+    const { useEffect } = React;
+
+    function Tweaks() {
+      const { TweaksPanel, useTweaks, TweakSection, TweakToggle, TweakRadio, TweakText } = window;
+      const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS);
+
+      useEffect(() => {
+        const b = document.body;
+        b.classList.remove("palette-saffron", "palette-maroon", "palette-emerald", "palette-ivory");
+        b.classList.add("palette-" + t.palette);
+        b.classList.toggle("t-hide-strip", !t.showDailyStrip);
+        b.classList.toggle("t-hide-quote", !t.showFooterQuote);
+
+        const period = document.querySelector(".back .reportmeta .period");
+        if (period) period.textContent = t.reportPeriod;
+      }, [t]);
+
+      return (
+        <TweaksPanel title="Tweaks">
+          <TweakSection title="Palette">
+            <TweakRadio
+              label="Color theme"
+              value={t.palette}
+              onChange={v => setTweak("palette", v)}
+              options={[
+                { label: "Saffron", value: "saffron" },
+                { label: "Maroon",  value: "maroon"  },
+                { label: "Emerald", value: "emerald" },
+                { label: "Ivory",   value: "ivory"   },
+              ]}
+            />
+          </TweakSection>
+
+          <TweakSection title="Back">
+            <TweakText label="Period" value={t.reportPeriod} onChange={v => setTweak("reportPeriod", v)} />
+            <TweakToggle label="Show daily activities strip" value={t.showDailyStrip} onChange={v => setTweak("showDailyStrip", v)} />
+            <TweakToggle label="Show footer quote" value={t.showFooterQuote} onChange={v => setTweak("showFooterQuote", v)} />
+          </TweakSection>
+        </TweaksPanel>
+      );
+    }
+
+    function mount() {
+      if (!window.TweaksPanel || !window.useTweaks) {
+        setTimeout(mount, 60);
+        return;
+      }
+      const root = ReactDOM.createRoot(document.getElementById("tweaks-root"));
+      root.render(<Tweaks />);
+    }
+    mount();
+  })();
+</script>
+
+</body></html>

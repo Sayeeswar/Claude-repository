@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Date: Sat, 16 May 2026 11:41:21 GMT
+Content-Type: application/gzip
+Transfer-Encoding: chunked
+Connection: keep-alive
+Cache-Control: no-store
+content-disposition: attachment; filename="Postal card-handoff.tar.gz"
+request-id: req_011Cb6BjmtaYb4E9siuXwwnE
+X-Robots-Tag: none
+x-version: c0f0c0a4032305d640569bf129e1e7c05d3d9220
+x-envoy-upstream-service-time: 212
+Server: cloudflare
+server-timing: x-originResponse;dur=214
+cf-cache-status: DYNAMIC
+set-cookie: _cfuvid=IxYreNDpT2aNBV5TPRinasjLOQHpWkiJCNe4gDLDhR4-1778931681.4147475-1.0.1.1-MDv0sHDbFTUp7EQeBz7rJLTbbsH8VT490EOxVe7ksaI; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.anthropic.com
+Content-Security-Policy: default-src 'none'; frame-ancestors 'none'
+CF-RAY: 9fca1ce0db712d42-MAA
+
